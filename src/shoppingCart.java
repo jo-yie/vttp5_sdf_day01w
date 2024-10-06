@@ -1,39 +1,52 @@
-import java.io.Console;
 import java.util.*;
 
-public class shoppingCart {
+public class ShoppingCart {
 
-    public void list(List l) {
-        if (cart.size() > 0) {
-            for (int i = 0; i< cart.size(); i++) {
-                System.out.printf("%d. %s \r\n", i + 1, cart.get(i));
-            } 
+    private List<String> cart = new ArrayList<>();
+    
+    public ShoppingCart() {
+    }
+
+    public void list() {
+        if (this.cart.size() > 0) {
+            int i = 1;
+            for (String item : this.cart) {
+                System.out.printf("%d. %s \r\n", i, item);
+                i++;
+            }
         } else {
             System.out.println("Your cart is empty");
         }
+        
     }
 
-    public static void main(String[] args) {
-        System.out.println("Welcome to your shopping cart");
-        shoppingCart newCart = new shoppingCart();
-
-        Console console = System.console();
-        List<String> cart = new ArrayList<String>();
-        String keyboardInput = "";
-        keyboardInput = console.readLine();
-        Scanner scan = new Scanner(keyboardInput); 
-
-        if (keyboardInput.equals("list")) {
-            list();
-        } else if (keyboardInput.startsWith("add ")) {
-            while (scan.hasNext()) {
-                String item = scan.next();
-                cart.add(item);
-                System.out.println(item + " added to cart");
-            }
+    public void add(String item) {
+        if (this.cart.contains(item)) {
+            System.out.println("You have " + item + " in your cart");
+        } else {
+            this.cart.add(item);
+            System.out.println(item + " added to cart");
         }
-
-        scan.close();
-
+        
     }
+
+    public void delete(int num) {
+        if (num <= getCart().size() && num > 0) {
+            int indexToDelete = num - 1; 
+            System.out.println(this.cart.get(indexToDelete) + " removed from cart");
+            this.cart.remove(indexToDelete);
+        } else {
+            System.out.println("Incorrect item index");
+        }
+    }
+
+    public List<String> getCart() {
+        return cart;
+    }
+
+    public void setCart(List<String> cart) {
+        this.cart = cart;
+    }
+
+    
 }
