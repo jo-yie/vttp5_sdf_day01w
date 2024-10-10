@@ -1,5 +1,7 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -62,14 +64,26 @@ public class ShoppingCart {
     // if database file does not exist, file is created
     public void login(String userName) {
         File userFile = new File(this.directoryName + "/" + userName + ".db");
+        this.cart.clear();
 
         if (userFile.exists()) {
-            if (this.cart.size() > 0) {
-                System.out.println(userName + ", your cart contains the following items");
-                ((ShoppingCart) cart).list();
-            } else {
-                System.out.println(userName + ", your cart is empty");
+            try (BufferedReader reader = new BufferedReader(new FileReader(userFile))) {
+                String tempObject;
+                while ((tempObject = reader.readLine()) != null) {
+                    this.cart.add(tempObject);
+
+                }
+            } catch (IOException e) {
+                System.out.println("Error with login");
             }
+
+            if (this.cart.size() == 0) {
+                System.out.println(userName + ", your cart is empty");
+            } else {
+                System.out.println(userName + ", your cart contains the following items");
+                this.list();
+            }
+
         } else {
             try {
                 userFile.createNewFile(); 
@@ -89,14 +103,14 @@ public class ShoppingCart {
             System.out.println("Please login to save");
         } else {
             File userFile = new File(directoryName + "/" + user + ".db");
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile))) {
-            for (String item : cart) {
-                writer.write(item);
-                writer.newLine();
-            }
-            System.out.println("Your cart has been saved");
-        } catch (IOException e) {
-            System.out.println("Error saving cart");
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile))) {
+                for (String item : cart) {
+                    writer.write(item);
+                    writer.newLine();
+                }
+                System.out.println("Your cart has been saved");
+            } catch (IOException e) {
+                System.out.println("Error saving cart");
             }
         }
 
